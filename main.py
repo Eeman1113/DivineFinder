@@ -9,7 +9,7 @@ import requests
 app = Flask(__name__)
 
 # Configuration
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "abcd"
 LLM_MODEL_NAME = "google/gemini-2.0-pro-exp-02-05:free"  
 ENABLE_CACHING = True
 CACHE_DIR = "paper_cache"
