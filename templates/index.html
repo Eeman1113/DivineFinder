@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AI Research Paper Generator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; background-color: #f8f9fa; }
+        h1 { text-align: center; margin-bottom: 30px; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .container { background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 30px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        .input-group { display: flex; margin-bottom: 20px; }
+        input { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px 0 0 4px; font-size: 16px; transition: border-color 0.3s; }
+        input:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); }
+        button { padding: 12px 24px; background-color: #3498db; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
+        button:hover { background-color: #2980b9; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
+        .loading { text-align: center; padding: 40px 0; display: none; }
+        .loading-spinner { border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 2s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .stages { max-width: 600px; margin: 20px auto; padding: 0; list-style: none; }
+        .stage { padding: 10px; margin-bottom: 8px; border-radius: 4px; background-color: #f1f1f1; color: #7f8c8d; position: relative; padding-left: 40px; transition: all 0.3s; }
+        .stage::before { content: "○"; position: absolute; left: 15px; font-size: 18px; }
+        .stage.active { background-color: #e1f0fa; color: #3498db; font-weight: 500; }
+        .stage.active::before { content: "●"; color: #3498db; }
+        .stage.completed { background-color: #e8f8f5; color: #27ae60; }
+        .stage.completed::before { content: "✓"; color: #27ae60; }
+        .output { margin-top: 30px; display: none; }
+        .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .copy-btn { padding: 8px 16px; font-size: 14px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
+        .copy-btn:hover { background-color: #27ae60; }
+        pre { background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; padding: 15px; white-space: pre-wrap; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 14px; max-height: 500px; overflow-y: auto; }
+        .next-steps { background-color: #e8f0fe; border: 1px solid #d0e1f9; border-radius: 4px; padding: 20px; margin-top: 30px; }
+        .next-steps h3 { color: #2c3e50; margin top: 0; border-bottom: 1px solid #d0e1f9; padding-bottom: 10px; }
+        .next-steps ol { padding-left: 20px; }
+        .next-steps li { margin-bottom: 8px; }
+        .error { color: #e74c3c; background-color: #fadbd8; padding: 10px 15px; border-radius: 4px; margin-top: 10px; display: none; border-left: 4px solid #e74c3c; }
+        footer { text-align: center; margin-top: 40px; color: #7f8c8d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced AI Research Paper Generator</h1>
+        <div>
+            <label for="topic">Enter Research Topic or Title:</label>
+            <div class="input-group">
+                <input type="text" id="topic" placeholder="e.g., The Impact of Artificial Intelligence on Climate Change Mitigation">
+                <button id="generate-btn">Generate Paper</button>
+            </div>
+            <div class="error" id="error-message"></div>
+        </div>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Generating your high-quality research paper...</p>
+            <p style="font-size: 14px; color: #666;">This process takes 3-5 minutes as our AI crafts a comprehensive academic paper.</p>
+            <ul class="stages">
+                <li class="stage" id="stage-1">Planning research structure and approach</li>
+                <li class="stage" id="stage-2">Creating LaTeX template with appropriate packages</li>
+                <li class="stage" id="stage-3">Generating detailed academic content</li>
+                <li class="stage" id="stage-4">Enhancing citations and references</li>
+                <li class="stage" id="stage-5">Improving diagrams and visualizations</li>
+                <li class="stage" id="stage-6">Final polishing and quality assurance</li>
+            </ul>
+        </div>
+        <div class="output" id="output">
+            <div class="output-header">
+                <h2>Generated LaTeX Research Paper</h2>
+                <button class="copy-btn" id="copy-btn">Copy to Clipboard</button>
+            </div>
+            <pre id="latex-output"></pre>
+            <div class="next-steps">
+                <h3>Next Steps:</h3>
+                <ol>
+                    <li>Copy the LaTeX code to your preferred LaTeX editor (Overleaf, TeXstudio, etc.)</li>
+                    <li>Check for any compilation errors and make minor adjustments if needed</li>
+                    <li>Compile the document to generate your PDF research paper</li>
+                    <li>Review and modify the content as necessary for your specific needs</li>
+                    <li>If using Overleaf, create a new project and paste this code to immediately see the compiled PDF</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>Powered by OpenRouter AI &copy; 2025</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const topicInput = document.getElementById('topic');
+            const generateBtn = document.getElementById('generate-btn');
+            const loading = document.getElementById('loading');
+            const output = document.getElementById('output');
+            const latexOutput = document.getElementById('latex-output');
+            const copyBtn = document.getElementById('copy-btn');
+            const errorMessage = document.getElementById('error-message');
+            const stages = document.querySelectorAll('.stage');
+            function simulateProgress() {
+                const stageDurations = [8000, 15000, 60000, 25000, 30000, 20000];
+                let currentStage = 0;
+                function updateStage() {
+                    if (currentStage < stages.length) {
+                        stages.forEach((stage, index) => {
+                            stage.classList.remove('active');
+                            if (index < currentStage) {
+                                stage.classList.add('completed');
+                            }
+                        });
+                        stages[currentStage].classList.add('active');
+                        currentStage++;
+                        if (currentStage < stages.length) {
+                            setTimeout(updateStage, stageDurations[currentStage - 1]);
+                        }
+                    }
+                }
+                updateStage();
+            }
+            generateBtn.addEventListener('click', async function() {
+                const topic = topicInput.value.trim();
+                if (!topic) {
+                    errorMessage.textContent = 'Please enter a research topic or title';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                errorMessage.style.display = 'none';
+                loading.style.display = 'block';
+                output.style.display = 'none';
+                generateBtn.disabled = true;
+                stages.forEach(stage => {
+                    stage.classList.remove('active', 'completed');
+                });
+                simulateProgress();
+                try {
+                    const response = await fetch('/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ topic })
+                    });
+                    const data = await response.json();
+                    if (data.error) {
+                        errorMessage.textContent = data.error;
+                        errorMessage.style.display = 'block';
+                    } else {
+                        stages.forEach(stage => {
+                            stage.classList.remove('active');
+                            stage.classList.add('completed');
+                        });
+                        latexOutput.textContent = data.paper;
+                        output.style.display = 'block';
+                    }
+                } catch (error) {
+                    errorMessage.textContent = 'An error occurred. Please try again.';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    loading.style.display = 'none';
+                    generateBtn.disabled = false;
+                }
+            });
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(latexOutput.textContent)
+                    .then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+            });
+        });
+    </script>
+</body>
+</html>
+        
